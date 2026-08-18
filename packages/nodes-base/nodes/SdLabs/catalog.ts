@@ -1,6 +1,7 @@
 export type SdLabsTool = {
 	credits: number;
-	method: 'GET' | 'POST';
+	emailQuery?: boolean;
+	method: 'DELETE' | 'GET' | 'PATCH' | 'POST';
 	path: string;
 	slug: string;
 	summary: string;
@@ -19,8 +20,15 @@ const t = (
 	summary: string,
 	path: string,
 	credits = 1,
-	method: 'GET' | 'POST' = 'POST',
-): SdLabsTool => ({ slug, summary, path, credits, method });
+	method: SdLabsTool['method'] = 'POST',
+): SdLabsTool => ({
+	credits,
+	emailQuery: method === 'GET' && (slug === 'find-by-email' || slug === 'google'),
+	method,
+	path,
+	slug,
+	summary,
+});
 
 export const SD_LABS_MODULES: SdLabsModule[] = [
 	{
@@ -571,10 +579,43 @@ export const SD_LABS_MODULES: SdLabsModule[] = [
 		tools: [
 			t('verify-single', 'Verify a single email address', '/verification/verify-single', 5),
 			t(
+				'verify-bulk',
+				'Create a bulk email verification job (async)',
+				'/verification/verify-bulk',
+				20,
+			),
+			t(
+				'verify-bulk-status',
+				'Get status of a bulk verification job',
+				'/verification/verify-bulk/status/{jobId}',
+				0,
+				'GET',
+			),
+			t(
 				'find-verified-email',
 				'Find verified email for a person by name + domain',
 				'/verification/find-verified-email',
 				20,
+			),
+			t(
+				'find-verified-email-bulk',
+				'Create a bulk find-verified-email job (async)',
+				'/verification/find-verified-email-bulk',
+				50,
+			),
+			t(
+				'find-verified-email-bulk-status',
+				'Get status of a bulk find-verified-email job',
+				'/verification/find-verified-email-bulk/status/{jobId}',
+				0,
+				'GET',
+			),
+			t(
+				'jobs',
+				'List verification jobs for the authenticated user',
+				'/verification/jobs',
+				0,
+				'GET',
 			),
 			t(
 				'resolve-company-domains',
@@ -598,6 +639,36 @@ export const SD_LABS_MODULES: SdLabsModule[] = [
 				'GET',
 			),
 			t('bulk', 'Resolve up to 100 emails to LinkedIn profiles', '/email-to-linkedin/bulk', 70),
+			t(
+				'google',
+				'Google-only fallback: scrape a LinkedIn URL for an email (no credit deduction)',
+				'/email-to-linkedin/google',
+				0,
+				'GET',
+			),
+			t(
+				'stats',
+				'Return the authenticated user credit/usage stats',
+				'/email-to-linkedin/stats',
+				0,
+				'GET',
+			),
+		],
+	},
+	{
+		name: 'sdLabsLeads',
+		displayName: 'SD Labs Leads',
+		description: 'Create, list, update, ingest, and export Sales-IO leads',
+		aliases: ['leads', 'crm', 'ingest lead'],
+		tools: [
+			t('list', 'List leads (filters, pagination)', '/leads', 0, 'GET'),
+			t('get', 'Get a single lead by id', '/leads/{id}', 0, 'GET'),
+			t('create', 'Create a lead manually or from import', '/leads', 0),
+			t('ingest', 'Ingest a lead from an integrated tool', '/leads/ingest', 0),
+			t('update', 'Update lead fields, status, or assignee', '/leads/{id}', 0, 'PATCH'),
+			t('delete', 'Delete a lead', '/leads/{id}', 0, 'DELETE'),
+			t('bulk', 'Bulk assign, add to campaign, delete, or export leads', '/leads/bulk', 0),
+			t('export', 'Export leads as CSV', '/leads/export', 0),
 		],
 	},
 ];

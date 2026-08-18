@@ -28,7 +28,7 @@ export function titleFromSlug(slug: string): string {
 }
 
 export function createSdLabsDescription(mod: SdLabsModule): INodeTypeDescription {
-	const getSlugs = mod.tools.filter((tool) => tool.method === 'GET').map((tool) => tool.slug);
+	const emailGetSlugs = mod.tools.filter((tool) => tool.emailQuery).map((tool) => tool.slug);
 
 	const properties: INodeProperties[] = [
 		{
@@ -46,7 +46,7 @@ export function createSdLabsDescription(mod: SdLabsModule): INodeTypeDescription
 		},
 	];
 
-	if (getSlugs.length > 0) {
+	if (emailGetSlugs.length > 0) {
 		properties.push({
 			displayName: 'Email',
 			name: 'email',
@@ -57,7 +57,7 @@ export function createSdLabsDescription(mod: SdLabsModule): INodeTypeDescription
 			description: 'Email address to look up',
 			displayOptions: {
 				show: {
-					operation: getSlugs,
+					operation: emailGetSlugs,
 				},
 			},
 		});
@@ -69,12 +69,12 @@ export function createSdLabsDescription(mod: SdLabsModule): INodeTypeDescription
 		type: 'json',
 		default: '{}',
 		description:
-			'JSON sent to Sales-IO. Typical keys: companyName, email, domain, subject, body, url, linkedinUrl, fullName.',
+			'JSON sent to Sales-IO. For GET list/status use query fields here. For get/update/delete include "id" or "jobId" when the path needs it.',
 		displayOptions:
-			getSlugs.length > 0
+			emailGetSlugs.length > 0
 				? {
 						hide: {
-							operation: getSlugs,
+							operation: emailGetSlugs,
 						},
 					}
 				: undefined,

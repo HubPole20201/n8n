@@ -794,6 +794,7 @@
       "dist/nodes/SdLabs/SdLabsEmailToLinkedin.node.js",
       "dist/nodes/SdLabs/SdLabsEmailTools.node.js",
       "dist/nodes/SdLabs/SdLabsEnrichment.node.js",
+      "dist/nodes/SdLabs/SdLabsLeads.node.js",
       "dist/nodes/SdLabs/SdLabsLinkedinTools.node.js",
       "dist/nodes/SdLabs/SdLabsProspectIntelligence.node.js",
       "dist/nodes/SdLabs/SdLabsVerification.node.js",
